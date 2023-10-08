@@ -18,4 +18,7 @@ Comparison of model quantities with DNS data for turbulent kinetic energy, turbu
 
 ![image](https://github.com/Panchal1810/Fully-developed-2D-turbulent-channel-flow/assets/122630851/e2490ce7-6eac-4fba-a593-0ed34c623eaf)
 
+Turbulent budgeting and comparison with DNS data
+
+![image](https://github.com/Panchal1810/Fully-developed-2D-turbulent-channel-flow/assets/122630851/8b923da8-c6ae-4469-8d44-e5bc01a16bab)
 
