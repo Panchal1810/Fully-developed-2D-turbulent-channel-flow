@@ -163,7 +163,7 @@ ITER:
     
 	for (j=1;j<=NJ;j++)	
 	{
-	cout<<Y_NODE[j]<<" "<<U[j]<<" "<<k[j]<<" "<<" "<<w[j]<<" "<<nu_t[j]<<" "<<Pk[j]<<endl;
+//	cout<<Y_NODE[j]<<" "<<U[j]<<" "<<k[j]<<" "<<" "<<w[j]<<" "<<nu_t[j]<<" "<<Pk[j]<<endl;
 	}
 
    
