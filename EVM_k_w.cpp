@@ -18,8 +18,6 @@
 using namespace std;
 
 
-//float CELL_ZI[NI+1][NJ+1],CELL_ZEUA[NI+1][NJ+1],
-
 /////////////////////
 /* geomeUric daUa */
 ////////////////////
@@ -37,12 +35,7 @@ double Y[NJ];
 //double  X_NODE[NJ+1][NI+1], Y_NODE[NJ+1][NI+1], DXF[4][NJ+1][NI+1];//DXF node distance
 double  Y_NODE[NJ+1], DXF[4][NJ+1];//DXF node distance
 double Y_plus[NJ+1];
-/*
-double  S[4][NJ][NI]; //surface area
-double  VOL[NJ][NI];  //volume 
-double DELX[NJ][NI], DELY[NJ][NI];
-double fx[NJ][NI],  fy[NJ][NI]; //non uniform mesh factors
-*/
+
 
 double  S[4][NJ]; //surface area
 double DELY[NJ];
@@ -53,22 +46,6 @@ double fy[NJ]; //non uniform mesh factors
 /* turbulence data */
 //////////////////////////
 
-
-//double U[2][NJ+1][NI+1];//U-field given here U[0][j][i] means u and U[1][j][i] means v
-//double U_FACE[2][NJ+1][NI+1];//U-field given face velocity
-
-/*
-double AW[NJ+1][NI+1], AS[NJ+1][NI+1], AE[NJ+1][NI+1], AN[NJ+1][NI+1], AP[NJ+1][NI+1];
-double nu_t[NI+1][NJ+1], nu_ts[NI+1][NJ+1], nu_tn[NI+1][NJ+1];
-double SP[NJ+1][NI+1]; 
-double U_OLD[NJ+1][NJ+1],U[NJ+1][NI+1];
-double U_FACE[2][NJ+1][NI+1];
-double k[NJ+1][NI+1], k_OLD[NJ+1][NI+1];
-double Pk[NJ+1][NI+1];
-double w[NJ+1][NI+1], w_OLD[NJ+1][NI+1];
-double l_T[NJ+1][NI+1];
-double eps[NJ+1][NI+1];
-*/
 
 double AS[NJ+1], AN[NJ+1], AP[NJ+1];
 double nu_t[NJ+1], nu_ts[NJ+1], nu_tn[NJ+1];
@@ -110,16 +87,9 @@ void CALC_Pk();
 void CALC_k();
 void CALC_w();
 
-//void CALC_CONV(); //equation solved using gauss seidal
-//double CALC_ABS_ERROR();
-//double CALC_CONV_ERROR();
+
 double CALC_U_ERROR();
 
-//TDMA algorithm
-//double a[NJ+1][NI+1], b[NJ+1][NI+1], c[NJ+1][NI+1], d[NJ+1][NI+1];
-//double P[NJ+1][NI+1], Q[NJ+1][NI+1];
-//void CALC_CONV_VTDMA(); //equation solved using vertical TDMA
-//void CALC_CONV_HTDMA(); //equation solved using horizontal TDMA
 
 
 int FILE_WRITE1(); //writing post processing file in .dat format 
@@ -169,12 +139,6 @@ int main ()
     APPLY_BC();
     APPLY_IC();
 
-/*
-
-    for(j=1;j<=NJ;j++){
-    	cout<<U[j]<<" "<<k[j]<<" "<<eps[j]<<endl;
-	}
-*/   
 
     UPDATE();
     ofstream file3("ITER_VS_RESIDUE.dat");
@@ -235,38 +199,16 @@ void FILE_READ(){
 	int k;
 	k = 0;
 	
-//	ifstream file1("xc.dat");
-	ifstream file1("y_dns.dat");
-//	ifstream file3("u.dat");
-//	ifstream file4("v.dat");
-	
-/*
-	while ( file1 >> xdata)
-	{
-		X1.push_back(xdata);
-	}
-*/	
+
 	while( file1 >> ydata)
 	{
 		Y1.push_back(ydata);
 	}
 
-/*	
-	while ( file3 >> udata)
-	{
-		u.push_back(udata);
-	}
-	
-	while ( file4 >> vdata)
-	{
-		v.push_back(vdata);
-	}
-
-*/
 	
 	for(int i = 0; i <= Y1.size()-1;i++)
 	{
-//	cout <<Y1[i]<< endl;
+
 	}
 
 		
@@ -279,18 +221,12 @@ void FILE_READ(){
 void SET_GEOMETRY_NONUNIFORM()
 {
 	
-/*	                     // in compuational domain generates 1x1 squre domain.
-	delx = (L/(NI-2));    // X is horizontal direction in physical domain
-	dely = (H/(NJ-2));  // Y is vertical direction in physical domain
-	delv = delx * dely ;
-//	cout<<delv<<endl ;
-//	cout<<delx<<" "<<dely<<endl;
-*/
+
 	for(j=1;j<=NJ-1;j++)
 	{
-//	    X[j][i]= X1[i-1];
+
 		Y_NODE[j]= Y1[j-1];
-// 	  cout<<Y_NODE[j]<<" "<<" "<<Y[j]<<endl;
+
     } 
     
         Y_NODE[1] = 0;
@@ -319,96 +255,31 @@ void SET_GEOMETRY_NONUNIFORM()
  //   	cout<<Y_NODE[j]<<" "<<" "<<Y_plus[j]<<endl;
 	}
     
-     cout<<"\n"<<endl;
-       
-	for(j=1;j<=NJ-2;j++)
-	 {	
-		
-		DELY[j] = Y[j+1] - Y[j];
-//		cout<<DELY[j]<<endl;
-     }
-
-
-    for(j=1;j<=NJ-1;j++){
-//    	cout<<Y[j]<<" "<<DELY[j]<<endl;
-	}
-
-/*	 	
-	  for(j=2;j<=NJ-1;j++)
-	  {
-//		X_NODE[j][i] = (X[j][i]+X[j][i-1])/2;
-		Y_NODE[j] = (Y[j]+Y[j-1])/2;       
-//        cout<<Y_NODE[j]<<endl;
-	  } 
-*/
-
-/*
-for(j=2;j<=NJ-1;j++) // left and right boundary
-	  {
-//	  	X_NODE[j][1] = 0;
-	  	Y_NODE[j] = Y_NODE[j];
-//	  	X_NODE[j][NI] = L;
-	  	Y_NODE[j] =Y_NODE[j];
-	  }
-*/
-
-//for(i=2;i<=NI-1;i++) //top and bottom boundary
-//	  {
-//	  	X_NODE[1][i] = X_NODE[2][i];
+ 
 	  	Y_NODE[1] = 0;
-//	  	X_NODE[NJ][i] = X_NODE[NJ-1][i];
-	  	Y_NODE[NJ] = H;
-	  	
-//	  }
-	  
-/*	  
-	  Y_NODE[1][1] = 0;  //four corner of mesh
-	  Y_NODE[1][NI]=0;
-	  Y_NODE[NJ][1] = H;
-	  Y_NODE[NJ][NI] = H;
-*/
-	  
-	  
-//	  X_NODE[1][1] = 0; 
-//	  X_NODE[1][NI] = L; 
-//	  X_NODE[NJ][1] = 0;  
-//	  X_NODE[NJ][NI] = L; 
 
-//face center
-/*
-for(i=1;i<=NI-1;i++)
-	{
-	for(j=2;j<=NJ-1;j++)
-	{
-	//	Y_FACE_CENTER_X[j][i]= X[j][i];
-	//	cout<<Y_FACE_CENTER_X[j][i]<<endl;
-	    } 
-	}	
-*/	
-	  
+	  	Y_NODE[NJ] = H;
+  
 //NODE DISTANCE
 
 for(j=2;j<=NJ-1;j++)
 	{
-//		DXF[0][j][i] = (X_NODE[j][i]-X_NODE[j][i-1]); //WEST
+
 		DXF[1][j] = (Y_NODE[j]-Y_NODE[j-1]); //SOUTH
-//		DXF[2][j][i] = (X_NODE[j][i+1]-X_NODE[j][i]); //EAST
+
 		DXF[3][j] = (Y_NODE[j+1]-Y_NODE[j]); //NORTH
-	  //  cout<<DXF[0][j][i]<<" "<<DXF[1][j][i]<<" "<<DXF[2][j][i]<<" "<<DXF[3][j][i]<<endl;
-	  //  cout<<"\n"<<endl;
+
 	}    
 		
 //SURFACE AREA
 
 	for(j=2;j<=NJ-1;j++)
 	{
-//		S[0][j][i] = (Y[j][i-1] - Y[j-1][i-1]);//WEST FACE
+
 		S[1][j] = 1;//(X[j-1][i] - X[j-1][i-1]);	//SOUTH FACE 
-//	    S[2][j][i] = (Y[j][i] - Y[j-1][i]); //EAST FACE
+
 	    S[3][j] = 1;//(X[j][i] - X[j][i-1]);    //NORTH FACE
-	    
-//	    VOL[j][i] = S[2][j][i] * S[3][j][i] ;
-	//    cout<<S[2][j][i]<<" "<<S[3][j][i]<<endl;         
+        
     }
 	
 
@@ -423,26 +294,7 @@ for(j=2;j<=NJ-1;j++)
 
 
 void INTERPOLATE(){
-/*	
- //y-face velocity (in x direction)
-    for(i=1;i<=NI-1;i++)
-	{
-	  for(j=2;j<=NJ-1;j++)
-	  {	
-	     if (i==1)
-	     {
-	     	U_FACE[0][j][1] = U[0][j][1] ;
-		 }
-		 else if (i==NI-1){
-		 	U_FACE[0][j][NI-1] = U[0][j][NI] ;
-		 }
-		 else{
-         U_FACE[0][j][i] = fx[j][i]*U[0][j][i] + (1-fx[j][i])*U[0][j][i+1];	  		
-	     }
-	  //   cout<<U_FACE[0][j][i]<<endl;
-	  }
-    }
-*/
+
 
 //x-face velocity (in y direction)
 	  for(j=1;j<=NJ-1;j++)
@@ -464,22 +316,7 @@ void INTERPOLATE(){
 
 
 void APPLY_BC(){
-/*	
-	 for(j=1;j<=NJ;j++) // left and Right boundary condition
-	{
-		 U[j] = 1; //left
-		 k[j] = 1.5*(I*U_inf)*(I*U_inf);
-		 l_T[j] = kappa*Y_NODE[j];//min((pow(c_mu,0.25)*pow(k[j][i],1.5)/eps),(kappa*S/U_secd))
-		 w[j] = (pow(c_mu,0.25)*pow(k[j], 0.5))/ (beta*l_T[j]);
-		 
-		 
-		U[j][NI] = U[j][NI-1]; //Right //zero gradient
-		k[j][NI] = k[j][NI-1]; //Right		
-		w[j][NI] = w[j][NI-1];
 
-	}
-
-*/
 
 //	for(i=1;i<=NI;i++) // top and bottom boundary condition
 //	{
@@ -538,11 +375,6 @@ void CALC_EDDY_VIS(){
          	
 	   }
 
-//           nu_t[j] = k[j]/w[j];
-
-//           nu_ts[j][i] = c_mu*k[j-1][i]*k[j-1][i]/eps[j][i]; //*******
-//           nu_tn[j][i] = c_mu*k[j][i]*k[j-1][i]/eps[j][i]; //*******
-//            cout<<nu_t[j]<<endl;
     }
         
 }
@@ -555,31 +387,28 @@ void CALC_U(){
 
           SP[j] = 0;
 		  		    
-//		  AW[j][i] = kw[j][i] * S[0][j][i] / (DXF[0][j][i]);
+
 		  AS[j] = (nu + nu_t[j-1]) * S[1][j] / (DXF[1][j]);
-//		  AE[j][i] = ke[j][i] *S[2][j][i] / (DXF[2][j][i]);
+
 		  AN[j] = (nu+ nu_t[j]) * S[3][j] / (DXF[3][j]); 
 		  AP[j] = AN[j] + AS[j] - SP[j];
 		  
-//		  cout<<AN[j]<<" "<<AS[j]<<endl;
+
 		}	
 		
 	for(j=2;j<=NJ-1;j++)
 	{
 		U[j] = (AN[j] * U[j+1] + AS[j] * U[j-1] + ((1/(rho))*1*DELY[j-1]))/ AP[j];			
-//       cout<<AS[j]<<" "<<AN[j]<<" "<<AP[j]<<" "<<U[j]<<endl;
+
 	}
-	cout<<"\n"<<endl;	
+
 }
 
 void CALC_Pk(){
 	
 	for(j=2;j<=NJ-1;j++)
 	{
-	
-//		  kw[j][i] = 5 * (1 + (100/L) *Y_FACE_CENTER_X[j][i-1]);
-//        Pk[j][i] = (nu_t[j+1][i]*pow(((U[j+1][i] - U[j][i])/DXF[3][j][i]),2)) - (nu_t[j-1][i]*pow(((U[j][i] - U[j-1][i])/DXF[1][j][i]),2));
-      
+
           Pk[j] = nu_t[j]*pow(((U_FACE[1][j] - U_FACE[1][j-1])/DELY[j-1]),2);
                     
 	  }
@@ -590,21 +419,15 @@ void CALC_k(){
 
 	for(j=2;j<=NJ-1;j++)
 	{
-//		for(i=2;i<=NI-1;i++)
-//		{
 
        
           SP[j] = -DELY[j-1]*beta*w[j];
-		    
-//		  AW[j][i] = kw[j][i] * S[0][j][i] / (DXF[0][j][i]);
+
 		  AS[j] = (nu + (nu_t[j-1])/sigma_k) * S[1][j] / (DXF[1][j]);
-//		  AE[j][i] = ke[j][i] *S[2][j][i] / (DXF[2][j][i]);
+
 		  AN[j] = (nu+ (nu_t[j])/sigma_k) * S[3][j] / (DXF[3][j]);
 		  AP[j] = AN[j] + AS[j] - SP[j] ;
 
-         // cout<<kw[j][i]<<" "<<ks[j][i]<<" "<<ke[j][i]<<" "<<kn[j][i]<<endl;
-       // cout<<AW[j][i]<<" "<<AS[j][i]<<" "<<AE[j][i]<<" "<<AN[j][i]<<" "<<AP[j][i]<<endl;
-//		}	
 	}
 		
 	for(j=2;j<=NJ-1;j++)
@@ -621,15 +444,11 @@ void CALC_w(){
 	{
 
           SP[j] =  DELY[j-1]*(((c1_omega*Pk[j])/k[j]) - (c2_omega*w_OLD[j]));
-		    
-//		  AW[j][i] = kw[j][i] * S[0][j][i] / (DXF[0][j][i]);
+
 		  AS[j] = (nu + (nu_t[j-1])/sigma_omega) * S[1][j] / (DXF[1][j]);
-//		  AE[j][i] = ke[j][i] *S[2][j][i] / (DXF[2][j][i]);
+
 		  AN[j] = (nu+ (nu_t[j])/sigma_omega) * S[3][j] / (DXF[3][j]);
 		  AP[j] = AN[j] + AS[j] - SP[j] ;
-
-         // cout<<kw[j][i]<<" "<<ks[j][i]<<" "<<ke[j][i]<<" "<<kn[j][i]<<endl;
-       // cout<<AW[j][i]<<" "<<AS[j][i]<<" "<<AE[j][i]<<" "<<AN[j][i]<<" "<<AP[j][i]<<endl;
 
 	     }
 	 
@@ -678,18 +497,7 @@ int FILE_WRITE1(){  // how to write the data in the file ...
 
 	//grid line
 	ofstream file5("turbulence_k_w_data.dat");
-//    file5<<"VARIABLES = "<<'"'<<"Y"<<'"'<<endl;
-//    file5<<"ZONE J="<<NJ-1<<", F=POINT"<<endl;
 
-//	for (i=2;i<=NI-1;i++)
-//	{
-/*		
-		for (j=2;j<=NJ-1;j++)	
-		{
-//       cout<<AW[j][i]<<" "<<AS[j][i]<<" "<<AE[j][i]<<" "<<AN[j][i]<<" "<<AP[j][i]<<endl;
-		}
-//	}
-*/
 
 	for(j=2;j<=NJ-1;j++)
 	{	      
@@ -723,51 +531,7 @@ int FILE_WRITE1(){  // how to write the data in the file ...
 	
 	file7.close();
 
-/*
-    //temperature values at CV and heat flux (face values)
-	ofstream writer("structural_grid_04_HTDMA.dat");
-	if (!writer){
-		cout<<"error"<<endl;
-	}
-	else{
-		writer<<"VARIABLES = "<<'"'<<"Y"<<'"'<<", "<<'"'<<"U"<<'"'<<", "<<'"'<<"k"<<'"'<<", "<<'"'<<"w"<<'"'<<", "<<'"'<<"nu_t"<<'"'<<", "<<'"'<<"Pk"<<'"'<<endl;
-		writer<<"ZONE J="<<NJ<<", F=POINT"<<endl;
-//     for (i=1;i<=NI;i++)	
-//		{
-			for (j=1;j<=NJ;j++)
-			{
-	 			writer<<Y_NODE[j]<<" "<<U[j]<<" "<<k[j]<<" "<<" "<<w[j]<<" "<<nu_t[j]<<" "<<Pk[j]<<endl;
-			}
-//		}
-			writer.close();
-	}
-*/
+
 }
 
-/*
-int FILE_WRITE2(int n){  
-	int aa;
-	char ch[80];
- 
-	char str_interface[80];
 
-    aa = sprintf (ch, "%d",n);
-			
-		strcpy (str_interface,"2d_heat_conduction_with_heat_gen");
-		strcat (str_interface,ch);
-		strcat (str_interface,".dat");
-		
-  
-         ofstream file(str_interface);
-		file<<"VARIABLES = "<<'"'<<"X"<<'"'<<", "<<'"'<<"Y"<<'"'<<endl;
-		file<<"ZONE I="<<NI<<", J="<<NI<<", F=POINT"<<endl;
-     for(j=1;j<=NI;j++) 	
-		{
-			for(i=1;i<=NI;i++)
-			{
-				file<<X_NODE[j][i]<<" "<<Y_NODE[j][i]<<" "<<endl;
-			}
-		}
-		//	file.close();
-	}
-*/
